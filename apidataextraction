@@ -1,0 +1,25 @@
+
+import requests
+import pandas as pd
+
+url = "https://jsonplaceholder.typicode.com/users"
+
+try:
+    response = requests.get(url, timeout=15)
+    response.raise_for_status()
+
+    users = response.json()
+
+    df = pd.json_normalize(users)
+
+    columns = ["id", "name", "username", "email", "address.city"]
+    df = df[columns]
+
+    df.to_csv("users_data.csv", index=False)
+
+    print("API data extracted successfully!")
+    print(df.head())
+    print("Total users:", len(df))
+
+except requests.RequestException as error:
+    print("API request failed:", error)
